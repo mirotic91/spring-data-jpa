@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: local
+
+---
+
+spring:
+  profiles: local
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
