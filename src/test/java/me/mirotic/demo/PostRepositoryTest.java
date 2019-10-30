@@ -48,4 +48,10 @@ class PostRepositoryTest {
                 () -> assertThat(posts.getSize()).isEqualTo(3)
         );
     }
+
+    @Test
+    void custom() {
+        List<Post> posts = postRepository.findAllCustom();
+        assertThat(posts.size()).isEqualTo(10);
+    }
 }
