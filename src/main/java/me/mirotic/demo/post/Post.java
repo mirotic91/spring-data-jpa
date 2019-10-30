@@ -1,4 +1,4 @@
-package me.mirotic.demo;
+package me.mirotic.demo.post;
 
 import lombok.Builder;
 import lombok.Getter;

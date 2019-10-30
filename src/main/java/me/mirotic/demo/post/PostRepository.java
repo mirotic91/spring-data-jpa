@@ -1,4 +1,4 @@
-package me.mirotic.demo;
+package me.mirotic.demo.post;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

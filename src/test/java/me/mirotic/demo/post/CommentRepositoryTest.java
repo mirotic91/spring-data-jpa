@@ -1,4 +1,4 @@
-package me.mirotic.demo;
+package me.mirotic.demo.post;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,4 +37,5 @@ class CommentRepositoryTest {
         assertThat(comment.isPresent()).isTrue();
         comment.ifPresent(x -> log.debug(x.getPost().getTitle()));
     }
+
 }

@@ -1,6 +1,8 @@
-package me.mirotic.demo;
+package me.mirotic.demo.post;
 
 import lombok.extern.slf4j.Slf4j;
+import me.mirotic.demo.post.Post;
+import me.mirotic.demo.post.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
