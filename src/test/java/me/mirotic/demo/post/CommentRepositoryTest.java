@@ -38,4 +38,9 @@ class CommentRepositoryTest {
         comment.ifPresent(x -> log.debug(x.getPost().getTitle()));
     }
 
+    @Test
+    void jpql() {
+        Comment comment = commentRepository.findByContent("test").orElseThrow(RuntimeException::new);
+        assertThat(comment).isNotNull();
+    }
 }
