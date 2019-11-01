@@ -2,6 +2,7 @@ package me.mirotic.demo.post;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @ToString
+@NoArgsConstructor
 public class Comment {
 
     @Id @GeneratedValue
@@ -24,7 +26,8 @@ public class Comment {
 
     @Builder
     private Comment(String content, Post post) {
-        this.content = content;
+        post.getComments().add(this);
         this.post = post;
+        this.content = content;
     }
 }
