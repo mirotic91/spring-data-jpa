@@ -1,5 +1,6 @@
 package me.mirotic.demo.post;
 
+import com.querydsl.core.types.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,9 @@ class CommentRepositoryTest {
     @BeforeEach
     void init() {
         Post post = Post.builder().title("spring data").build();
-        Comment comment = Comment.builder().content("test").post(post).build();
+        Comment.builder().content("test").post(post).build();
 
         postRepository.save(post);
-        commentRepository.save(comment);
     }
 
     @Test
@@ -42,5 +42,15 @@ class CommentRepositoryTest {
     void jpql() {
         Comment comment = commentRepository.findByContent("test").orElseThrow(RuntimeException::new);
         assertThat(comment).isNotNull();
+    }
+
+    @Test
+    void querydsl() {
+        QComment comment = QComment.comment;
+        Predicate predicate = comment.content.startsWith("test")
+                .or(comment.content.containsIgnoreCase("spring"));
+
+        Optional<Comment> optionalComment = commentRepository.findOne(predicate);
+        assertThat(optionalComment).isNotEmpty();
     }
 }
