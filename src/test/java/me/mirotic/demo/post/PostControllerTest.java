@@ -39,6 +39,29 @@ class PostControllerTest {
     }
 
     @Test
+    void hateoas() throws Exception {
+        createPost();
+
+        mockMvc.perform(get("/posts/hateoas")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "id,desc")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.postList[0].title").value("spring data 100"))
+                .andExpect(jsonPath("$._links.first.href").value("http://localhost/posts/hateoas?page=0&size=10&sort=id,desc"))
+                .andExpect(jsonPath("$.page.number").value(0));
+    }
+
+    private void createPost() {
+        for (int i = 1; i <= 100; i++) {
+            Post post = Post.builder().title("spring data " + i).build();
+            postRepository.save(post);
+        }
+    }
+
+    @Test
     void getTitle() throws Exception {
         String title = "spring data";
         Post post = Post.builder().title(title).build();
