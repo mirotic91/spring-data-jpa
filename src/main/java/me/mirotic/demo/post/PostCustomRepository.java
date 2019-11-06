@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface PostCustomRepository {
 
-    List findAllCustom();
+    List<Post> findAllCustom();
 }
