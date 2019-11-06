@@ -1,14 +1,14 @@
 package me.mirotic.demo.post;
 
 import lombok.extern.slf4j.Slf4j;
-import me.mirotic.demo.post.Post;
-import me.mirotic.demo.post.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 
 import java.util.List;
 
@@ -55,5 +55,16 @@ class PostRepositoryTest {
     void custom() {
         List<Post> posts = postRepository.findAllCustom();
         assertThat(posts.size()).isEqualTo(10);
+    }
+
+    @Test
+    void orderByLength() {
+//        List<Post> posts = postRepository.findAllSort(Sort.by(Sort.Direction.DESC, "LENGTH(title)")); // @Query 정렬시 프로퍼티가 아니므로 에러 발생
+        List<Post> posts = postRepository.findAllSort(JpaSort.unsafe(Sort.Direction.DESC, "LENGTH(title)")); // @Query 함수 정렬시 unsafe 사용
+        assertThat(posts).isNotEmpty();
+
+        int first = posts.get(0).getTitle().length();
+        int last = posts.get(posts.size() - 1).getTitle().length();
+        assertThat(first).isGreaterThanOrEqualTo(last);
     }
 }
