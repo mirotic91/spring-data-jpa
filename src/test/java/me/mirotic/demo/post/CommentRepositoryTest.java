@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +22,9 @@ class CommentRepositoryTest {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @BeforeEach
     void init() {
@@ -52,5 +57,17 @@ class CommentRepositoryTest {
 
         Optional<Comment> optionalComment = commentRepository.findOne(predicate);
         assertThat(optionalComment).isNotEmpty();
+    }
+
+    @Test
+    void entityGraph() {
+        entityManager.flush();
+        String content = "test";
+
+        log.debug("lazy fetch query..");
+        commentRepository.findByContent(content);
+
+        log.debug("eager fetch query..");
+        commentRepository.getByContent(content);
     }
 }

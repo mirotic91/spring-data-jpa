@@ -1,5 +1,6 @@
 package me.mirotic.demo.post;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -12,5 +13,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Queryds
 
     @Query("SELECT c FROM Comment AS c WHERE c.content = :content")
     Optional<Comment> findByContent(String content);
+
+    @EntityGraph(attributePaths = "post")
+    Optional<Comment> getByContent(String content);
 
 }
