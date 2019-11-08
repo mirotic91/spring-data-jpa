@@ -22,13 +22,19 @@ public class Comment {
 
     private String content;
 
+    private int up;
+
+    private int down;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Post post;
 
     @Builder
-    private Comment(String content, Post post) {
+    private Comment(String content, int up, int down, Post post) {
         post.getComments().add(this);
         this.post = post;
+        this.up = up;
+        this.down = down;
         this.content = content;
     }
 }

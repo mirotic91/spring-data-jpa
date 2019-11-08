@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,9 +30,10 @@ class CommentRepositoryTest {
     @BeforeEach
     void init() {
         Post post = Post.builder().title("spring data").build();
-        Comment.builder().content("test").post(post).build();
+        Comment.builder().content("test").up(77).down(23).post(post).build();
 
         postRepository.save(post);
+        entityManager.flush();
     }
 
     @Test
@@ -61,7 +63,6 @@ class CommentRepositoryTest {
 
     @Test
     void entityGraph() {
-        entityManager.flush();
         String content = "test";
 
         log.debug("lazy fetch query..");
@@ -70,4 +71,18 @@ class CommentRepositoryTest {
         log.debug("eager fetch query..");
         commentRepository.getByContent(content);
     }
+
+    @Test
+    void projection() {
+        log.debug("select all query..");
+        commentRepository.findByPost_Id(1L, Comment.class);
+
+        log.debug("select up, down query..");
+        List<CommentSummary> summary = commentRepository.findByPost_Id(1L, CommentSummary.class);
+        summary.forEach(x -> {
+            log.debug("comment count summary");
+            log.debug("up[{}] down[{}] total[{}]", x.getUp(), x.getDown(), x.getTotalCount());
+        });
+    }
+
 }
