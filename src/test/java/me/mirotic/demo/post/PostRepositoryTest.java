@@ -67,4 +67,9 @@ class PostRepositoryTest {
         int last = posts.get(posts.size() - 1).getTitle().length();
         assertThat(first).isGreaterThanOrEqualTo(last);
     }
+
+    @Test
+    void specification() {
+        postRepository.findAll(PostSpecs.isBlock(), PageRequest.of(0, 5));
+    }
 }
