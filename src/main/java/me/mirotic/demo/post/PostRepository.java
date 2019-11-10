@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostCustomRepository, JpaSpecificationExecutor<Post> {
 
-    List<Post> findByTitleContainsOrderByCreateDesc(String title);
+    List<Post> findByTitleContainsOrderByCreatedDesc(String title);
 
     @Query("SELECT p FROM Post AS p")
     List<Post> findAllSort(Sort sort);

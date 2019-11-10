@@ -32,7 +32,7 @@ class PostRepositoryTest {
 
     @Test
     void naming() {
-        List<Post> posts = postRepository.findByTitleContainsOrderByCreateDesc("spring data 1");
+        List<Post> posts = postRepository.findByTitleContainsOrderByCreatedDesc("spring data 1");
 
         assertThat(posts).isNotEmpty();
         assertThat(posts.size()).isEqualTo(2);
@@ -71,5 +71,27 @@ class PostRepositoryTest {
     @Test
     void specification() {
         postRepository.findAll(PostSpecs.isBlock(), PageRequest.of(0, 5));
+    }
+
+    @Test
+    void audit() {
+        Post post = Post.builder().title("spring start").build();
+        Post savedPost = postRepository.save(post);
+
+        Post findPost = postRepository.findById(savedPost.getId()).orElseThrow(RuntimeException::new);
+        assertAll(
+                () -> assertThat(findPost.getCreatedBy()).isEqualTo("creator"),
+                () -> assertThat(findPost.getUpdatedBy()).isEqualTo("creator"),
+                () -> assertThat(findPost.getCreated()).isNotNull(),
+                () -> assertThat(findPost.getUpdated()).isNotNull()
+        );
+
+        findPost.updateTitle("spring end");
+        postRepository.flush();
+        assertAll(
+                () -> assertThat(findPost.getCreatedBy()).isEqualTo("creator"),
+                () -> assertThat(findPost.getUpdatedBy()).isEqualTo("updater"),
+                () -> assertThat(findPost.getUpdated().isAfter(findPost.getCreated())).isTrue()
+        );
     }
 }

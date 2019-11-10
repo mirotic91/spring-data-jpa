@@ -4,13 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +24,7 @@ import java.util.Set;
 @Getter
 @ToString(exclude = "comments")
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id @GeneratedValue
@@ -30,7 +36,15 @@ public class Post {
 
     private Boolean block;
 
-    private LocalDateTime create;
+    @CreatedDate
+    private LocalDateTime created;
+
+    @LastModifiedDate
+    private LocalDateTime updated;
+
+    private String createdBy;
+
+    private String updatedBy;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
@@ -40,6 +54,20 @@ public class Post {
         this.title = title;
         this.hit = 0;
         this.block = false;
-        this.create = LocalDateTime.now();
+    }
+
+    @PrePersist
+    private void prePersist() {
+        this.createdBy = "creator";
+        this.updatedBy = "creator";
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        this.updatedBy = "updater";
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
     }
 }
